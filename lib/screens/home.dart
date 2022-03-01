@@ -21,6 +21,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: Column(mainAxisAlignment: MainAxisAlignment.center),
       ),
+      backgroundColor: Colors.white24,
       floatingActionButton: FloatingActionButton( // 알람 추가 버튼 create를 테스트하기 위해 작성함 - column 안에 넣는 등 레이아웃에 넣어서 배열하면 좋을 듯
         onPressed: () {
           Navigator.push(context,
