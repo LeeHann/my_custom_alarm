@@ -67,7 +67,7 @@ class _CreateAlarmState extends State<CreateAlarm> {
       child: Column(
         // (매일 / 달력 아이콘) / (요일 체크)
         children: <Widget>[
-          Row(
+          Row(  // TODO: String과 Calendar 양측에 margin 필요
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
             Text(
