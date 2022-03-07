@@ -15,6 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.indigo,
       ),
+      debugShowCheckedModeBanner: false,      // debug 표시 끄기
       home: const MyHomePage(title: 'alarm'),
     );
   }
