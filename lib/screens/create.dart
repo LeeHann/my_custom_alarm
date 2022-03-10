@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 
 class CreateAlarm extends StatefulWidget {
@@ -11,13 +10,7 @@ class CreateAlarm extends StatefulWidget {
 
 class _CreateAlarmState extends State<CreateAlarm> {
   DateTime _settingTime = DateTime.now(); // 알람 울리는 시각
-  bool _mon = false,
-      _tue = false,
-      _wed = false,
-      _thu = false,
-      _fri = false,
-      _sat = false,
-      _sun = false; // 알람 울리는 요일
+  List<bool> _days = [false, false, false, false, false, false, false];
   DateTime? _settingDay; // 알람이 울리는 특정일
   String? _alarmName;
   bool _isSound = false, _isVib = false, _isRepeat = false;
@@ -41,19 +34,18 @@ class _CreateAlarmState extends State<CreateAlarm> {
             // 키보드 외 다른 곳 클릭 시 키보드 감추기
             onTap: () => FocusScope.of(context).unfocus(),
             child: SingleChildScrollView(
-              child: Column(
+                child: Column(
               children: <Widget>[
                 Padding(padding: EdgeInsets.all(10)),
                 spinner(),
                 Inner(), // 스크롤링 가능
               ],
-            )
-        )
-        )
-    );
+            ))));
   }
 
-  void saveDB() {}
+  void saveDB() {
+    print("save");
+  } // Todo:saveDB
 
   Widget spinner() {
     return Container(
@@ -127,178 +119,13 @@ class _CreateAlarmState extends State<CreateAlarm> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               // 요일 체크
-              Column(children: <Widget>[
-                Text(
-                  "월",
-                  style: TextStyle(color: Colors.white70, fontSize: 18),
-                ),
-                IconButton(
-                  icon: Icon(
-                    _mon
-                        ? Icons.check_circle
-                        : Icons.radio_button_unchecked_sharp,
-                    color: Colors.white70,
-                  ),
-                  onPressed: () {
-                    _mon = !_mon;
-                    setState(() {
-                      Icon(
-                        _mon
-                            ? Icons.check_circle
-                            : Icons.radio_button_unchecked_sharp,
-                        color: Colors.white70,
-                      );
-                    });
-                  },
-                ),
-              ]),
-              Column(children: <Widget>[
-                Text(
-                  "화",
-                  style: TextStyle(color: Colors.white70, fontSize: 18),
-                ),
-                IconButton(
-                  icon: Icon(
-                    _tue
-                        ? Icons.check_circle
-                        : Icons.radio_button_unchecked_sharp,
-                    color: Colors.white70,
-                  ),
-                  onPressed: () {
-                    _tue = !_tue;
-                    setState(() {
-                      Icon(
-                        _tue
-                            ? Icons.check_circle
-                            : Icons.radio_button_unchecked_sharp,
-                        color: Colors.white70,
-                      );
-                    });
-                  },
-                ),
-              ]),
-              Column(children: <Widget>[
-                Text(
-                  "수",
-                  style: TextStyle(color: Colors.white70, fontSize: 18),
-                ),
-                IconButton(
-                  icon: Icon(
-                    _wed
-                        ? Icons.check_circle
-                        : Icons.radio_button_unchecked_sharp,
-                    color: Colors.white70,
-                  ),
-                  onPressed: () {
-                    _wed = !_wed;
-                    setState(() {
-                      Icon(
-                        _wed
-                            ? Icons.check_circle
-                            : Icons.radio_button_unchecked_sharp,
-                        color: Colors.white70,
-                      );
-                    });
-                  },
-                ),
-              ]),
-              Column(children: <Widget>[
-                Text(
-                  "목",
-                  style: TextStyle(color: Colors.white70, fontSize: 18),
-                ),
-                IconButton(
-                  icon: Icon(
-                    _thu
-                        ? Icons.check_circle
-                        : Icons.radio_button_unchecked_sharp,
-                    color: Colors.white70,
-                  ),
-                  onPressed: () {
-                    _thu = !_thu;
-                    setState(() {
-                      Icon(
-                        _thu
-                            ? Icons.check_circle
-                            : Icons.radio_button_unchecked_sharp,
-                        color: Colors.white70,
-                      );
-                    });
-                  },
-                ),
-              ]),
-              Column(children: <Widget>[
-                Text(
-                  "금",
-                  style: TextStyle(color: Colors.white70, fontSize: 18),
-                ),
-                IconButton(
-                  icon: Icon(
-                    _fri
-                        ? Icons.check_circle
-                        : Icons.radio_button_unchecked_sharp,
-                    color: Colors.white70,
-                  ),
-                  onPressed: () {
-                    _fri = !_fri;
-                    setState(() {
-                      Icon(
-                        _fri
-                            ? Icons.check_circle
-                            : Icons.radio_button_unchecked_sharp,
-                        color: Colors.white70,
-                      );
-                    });
-                  },
-                ),
-              ]),
-              Column(children: <Widget>[
-                Text(
-                  "토",
-                  style: TextStyle(color: Colors.white70, fontSize: 18),
-                ),
-                IconButton(
-                  icon: Icon(
-                    _sat
-                        ? Icons.check_circle
-                        : Icons.radio_button_unchecked_sharp,
-                    color: Colors.white70,
-                  ),
-                  onPressed: () {
-                    _sat = !_sat;
-                    setState(() {
-                      Icon(
-                        _sat
-                            ? Icons.check_circle
-                            : Icons.radio_button_unchecked_sharp,
-                        color: Colors.white70,
-                      );
-                    });
-                  },
-                ),
-              ]),
-              Column(children: <Widget>[
-                Text(
-                  "일",
-                  style: TextStyle(color: Colors.white70, fontSize: 18),
-                ),
-                IconButton(
-                  icon: Icon(
-                    _sun
-                        ? Icons.check_circle
-                        : Icons.radio_button_unchecked_sharp,
-                    color: Colors.white70,
-                  ),
-                  onPressed: () {
-                    _sun = !_sun;
-                    setState(() {
-                      Icon(_sun
-                          ? Icons.check_circle
-                          : Icons.radio_button_unchecked_sharp);
-                    });
-                  },
-                ),
-              ]),
+              _dayChecker("월", 0),
+              _dayChecker("화", 1),
+              _dayChecker("수", 2),
+              _dayChecker("목", 3),
+              _dayChecker("금", 4),
+              _dayChecker("토", 5),
+              _dayChecker("일", 6),
             ],
           ) // 요일 체크
         ],
@@ -312,9 +139,9 @@ class _CreateAlarmState extends State<CreateAlarm> {
         TextField(
             decoration: InputDecoration(
               hintText: '알람 이름을 입력하세요',
-              hintStyle: TextStyle(color : Colors.white70),
+              hintStyle: TextStyle(color: Colors.white70),
             ),
-            style: TextStyle(color : Colors.white70),
+            style: TextStyle(color: Colors.white70),
             onChanged: (text) {
               setState(() {
                 _alarmName = text;
@@ -328,19 +155,145 @@ class _CreateAlarmState extends State<CreateAlarm> {
   Widget _showChild3_switch() {
     return Column(
       children: <Widget>[
+        Padding(padding: EdgeInsets.only(bottom: 10)),
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text("알람음 | Default"),
-            Switch(value: _isSound, onChanged: (value){
-              setState(() {
-                _isSound = !_isSound;
-                print(_isSound);
-              });
-            }, activeColor: Colors.white70, inactiveThumbColor: Colors.black,)
+            TextButton(
+              onPressed: _sound,
+              child: Text(
+                "소리 | " + "default",
+                style: TextStyle(color: Colors.white70, fontSize: 18),
+              ),
+            ), // Todo : default를 알람음 이름으로 변경
+
+            Switch(
+              value: _isSound,
+              onChanged: (value) {
+                setState(() {
+                  _isSound = !_isSound;
+                  print(_isSound);
+                });
+              },
+              activeColor: Colors.white70,
+              inactiveThumbColor: Colors.black,
+            )
           ],
         ),
+        Padding(padding: EdgeInsets.only(bottom: 10)),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            TextButton(
+              onPressed: _vib,
+              child: Text(
+                "진동 | " + "default",
+                style: TextStyle(color: Colors.white70, fontSize: 18),
+              ),
+            ), // Todo : default를 진동 이름으로 변경
+            Switch(
+              value: _isVib,
+              onChanged: (value) {
+                setState(() {
+                  _isVib = !_isVib;
+                  print(_isVib);
+                });
+              },
+              activeColor: Colors.white70,
+              inactiveThumbColor: Colors.black,
+            )
+          ],
+        ),
+        Padding(padding: EdgeInsets.only(bottom: 10)),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            TextButton(
+              onPressed: _repeat,
+              child: Text(
+                "반복 | " + "default",
+                style: TextStyle(color: Colors.white70, fontSize: 18),
+              ), // Todo : default를 반복 횟수로 변경
+            ),
+            Switch(
+              value: _isRepeat,
+              onChanged: (value) {
+                setState(() {
+                  _isRepeat = !_isRepeat;
+                  print(_isRepeat);
+                });
+              },
+              activeColor: Colors.white70,
+              inactiveThumbColor: Colors.black,
+            )
+          ],
+        ),
+        _optionChecker("optText", _repeat, _isRepeat)
       ],
     );
+  }
+
+  Widget _dayChecker(String dayText, int day) {
+    return Column(children: <Widget>[
+      Text(
+        dayText,
+        style: TextStyle(color: Colors.white70, fontSize: 18),
+      ),
+      IconButton(
+        icon: Icon(
+          _days[day] ? Icons.check_circle : Icons.radio_button_unchecked_sharp,
+          color: Colors.white70,
+        ),
+        onPressed: () {
+          _days[day] = !_days[day];
+          setState(() {
+            Icon(
+              _days[day]
+                  ? Icons.check_circle
+                  : Icons.radio_button_unchecked_sharp,
+              color: Colors.white70,
+            );
+          });
+        },
+      ),
+    ]);
+  }
+  Widget _optionChecker(String optText, func, var val) {  // Todo : flutter call by reference 를 좀 더 조사할 것
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        TextButton(
+          onPressed: func,
+          child: Text(
+            optText + " | " + "default",
+            style: TextStyle(color: Colors.white70, fontSize: 18),
+          ), // Todo : default를 함수 반환 값으로 변경
+        ),
+        Switch(
+          value: val,
+          onChanged: (value) {
+            setState(() {
+              val = !val;
+              print(val);
+            });
+          },
+          activeColor: Colors.white70,
+          inactiveThumbColor: Colors.black,
+        )
+      ],
+    );
+  }
+
+  void _sound() {
+    print("sound");
+  }
+
+  void _vib() {
+    print("vib");
+  }
+
+  void _repeat() {
+    print("repeat");
   }
 }
 
