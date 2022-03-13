@@ -6,9 +6,10 @@ class testAlarm{
   List<bool> _days = [false, false, false, false, false, false, false];
   DateTime? _settingDay; // 알람이 울리는 특정일
   String? alarmName;
-  bool _isSound = false, _isVib = false, _isRepeat = false;
+  List<bool> _option = [false, false, false];
+  // bool _isSound = false, _isVib = false, _isRepeat = false;
 
-  testAlarm({required this.id, required alarmName});
+  testAlarm({required this.id, required this.alarmName});
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{

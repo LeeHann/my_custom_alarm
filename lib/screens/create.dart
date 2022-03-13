@@ -1,22 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
-
+import 'package:my_custom_alarm/DB/db.dart';
+import 'package:my_custom_alarm/data/alarm.dart';
+// Todo : edit
 class CreateAlarm extends StatefulWidget {
   const CreateAlarm({Key? key}) : super(key: key);
 
   @override
   _CreateAlarmState createState() => _CreateAlarmState();
 }
-
 class _CreateAlarmState extends State<CreateAlarm> {
   DateTime _settingTime = DateTime.now(); // 알람 울리는 시각
   List<bool> _days = [false, false, false, false, false, false, false];
   DateTime? _settingDay; // 알람이 울리는 특정일
-  String? _alarmName;
-  bool _isSound = false, _isVib = false, _isRepeat = false;
+  String? _alarmName = '';
+  List<bool> _option = [
+    false,
+    false,
+    false
+  ]; //_isSound = false, _isVib = false, _isRepeat = false;
+  List<String> _optionStr = ['', '', ''];
+
+  BuildContext? _context;
 
   @override
   Widget build(BuildContext context) {
+    _context = context;
     return Scaffold(
         appBar: AppBar(
           actions: <Widget>[
@@ -43,9 +52,17 @@ class _CreateAlarmState extends State<CreateAlarm> {
             ))));
   }
 
-  void saveDB() {
-    print("save");
-  } // Todo:saveDB
+  Future<void> saveDB() async {
+    AlarmProvider ap = AlarmProvider();
+
+    var fido = testAlarm(
+      id: 0, // Todo : id autoincrement
+      alarmName: _settingTime.toString()
+    );
+
+    print(await ap.insert(fido));
+    Navigator.pop(_context!);
+  }
 
   Widget spinner() {
     return Container(
@@ -64,7 +81,7 @@ class _CreateAlarmState extends State<CreateAlarm> {
           onTimeChange: (time) {
             setState(() {
               _settingTime = time;
-              print(_settingTime); // TODO: second를 0으로 세팅
+              print(_settingTime); // TODO: second 를 0으로 세팅
             });
           },
         ));
@@ -76,8 +93,11 @@ class _CreateAlarmState extends State<CreateAlarm> {
       padding: EdgeInsets.symmetric(horizontal: 20),
       child: new Column(
         children: <Widget>[
+          Padding(padding: EdgeInsets.only(bottom: 10)),
           _showChild1_check_day(),
+          Padding(padding: EdgeInsets.only(bottom: 10)),
           _showChild2_set_name(),
+          Padding(padding: EdgeInsets.only(bottom: 10)),
           _showChild3_switch(),
         ],
       ),
@@ -155,80 +175,9 @@ class _CreateAlarmState extends State<CreateAlarm> {
   Widget _showChild3_switch() {
     return Column(
       children: <Widget>[
-        Padding(padding: EdgeInsets.only(bottom: 10)),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            TextButton(
-              onPressed: _sound,
-              child: Text(
-                "소리 | " + "default",
-                style: TextStyle(color: Colors.white70, fontSize: 18),
-              ),
-            ), // Todo : default를 알람음 이름으로 변경
-
-            Switch(
-              value: _isSound,
-              onChanged: (value) {
-                setState(() {
-                  _isSound = !_isSound;
-                  print(_isSound);
-                });
-              },
-              activeColor: Colors.white70,
-              inactiveThumbColor: Colors.black,
-            )
-          ],
-        ),
-        Padding(padding: EdgeInsets.only(bottom: 10)),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            TextButton(
-              onPressed: _vib,
-              child: Text(
-                "진동 | " + "default",
-                style: TextStyle(color: Colors.white70, fontSize: 18),
-              ),
-            ), // Todo : default를 진동 이름으로 변경
-            Switch(
-              value: _isVib,
-              onChanged: (value) {
-                setState(() {
-                  _isVib = !_isVib;
-                  print(_isVib);
-                });
-              },
-              activeColor: Colors.white70,
-              inactiveThumbColor: Colors.black,
-            )
-          ],
-        ),
-        Padding(padding: EdgeInsets.only(bottom: 10)),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            TextButton(
-              onPressed: _repeat,
-              child: Text(
-                "반복 | " + "default",
-                style: TextStyle(color: Colors.white70, fontSize: 18),
-              ), // Todo : default를 반복 횟수로 변경
-            ),
-            Switch(
-              value: _isRepeat,
-              onChanged: (value) {
-                setState(() {
-                  _isRepeat = !_isRepeat;
-                  print(_isRepeat);
-                });
-              },
-              activeColor: Colors.white70,
-              inactiveThumbColor: Colors.black,
-            )
-          ],
-        ),
-        _optionChecker("optText", _repeat, _isRepeat)
+        _optionChecker("소리", _sound, 0),
+        _optionChecker("진동", _vib, 1),
+        _optionChecker("반복", _repeat, 2)
       ],
     );
   }
@@ -258,23 +207,25 @@ class _CreateAlarmState extends State<CreateAlarm> {
       ),
     ]);
   }
-  Widget _optionChecker(String optText, func, var val) {  // Todo : flutter call by reference 를 좀 더 조사할 것
+
+  Widget _optionChecker(String optText, func, int opt) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         TextButton(
           onPressed: func,
           child: Text(
-            optText + " | " + "default",
+            optText +
+                " | " +
+                (_optionStr[opt] == '' ? "default" : _optionStr[opt]),
             style: TextStyle(color: Colors.white70, fontSize: 18),
-          ), // Todo : default를 함수 반환 값으로 변경
+          ),
         ),
         Switch(
-          value: val,
+          value: _option[opt],
           onChanged: (value) {
             setState(() {
-              val = !val;
-              print(val);
+              _option[opt] = !_option[opt];
             });
           },
           activeColor: Colors.white70,
@@ -285,15 +236,30 @@ class _CreateAlarmState extends State<CreateAlarm> {
   }
 
   void _sound() {
-    print("sound");
+    setState(() {
+      if (_optionStr[0] == '')
+        _optionStr[0] = "sound";
+      else
+        _optionStr[0] = '';
+    });
   }
 
   void _vib() {
-    print("vib");
+    setState(() {
+      if (_optionStr[1] == '')
+        _optionStr[1] = "vib";
+      else
+        _optionStr[1] = '';
+    });
   }
 
   void _repeat() {
-    print("repeat");
+    setState(() {
+      if (_optionStr[2] == '')
+        _optionStr[2] = "repeat";
+      else
+        _optionStr[2] = '';
+    });
   }
 }
 
@@ -304,3 +270,4 @@ class _CreateAlarmState extends State<CreateAlarm> {
 // EdgeInsets.symmetric https://negabaro.github.io/archive/flutter-painting-EdgeInsets
 // border https://api.flutter.dev/flutter/painting/Border-class.html
 // TextField https://dev-yakuza.posstree.com/ko/flutter/widget/textfield/
+// call by reference 를 List 사용하기 https://devmemory.tistory.com/34
