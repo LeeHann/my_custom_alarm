@@ -21,5 +21,4 @@
 - 알람 반복 설정 기능      
 - 알람 on/off 기능
 
-
-<img src="https://user-images.githubusercontent.com/44077831/159132314-0176bbd3-7e69-4e02-a225-87312564c323.png" width="350" height="600"/> <img src="https://user-images.githubusercontent.com/44077831/159132326-85e2f869-ec2a-4277-85bf-51ba1e5d4454.png" width="350" height="600"/>
+<img src="https://user-images.githubusercontent.com/44077831/159132596-aa98be6c-fecb-4eb4-9f52-5c83762bfa11.png" width="350" height="600"/> <img src="https://user-images.githubusercontent.com/44077831/159132326-85e2f869-ec2a-4277-85bf-51ba1e5d4454.png" width="350" height="600"/>
