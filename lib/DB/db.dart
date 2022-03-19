@@ -51,6 +51,7 @@ class AlarmProvider {
       print(test_alarm.toMap());
       test_alarm.id = await db.insert(tableName, test_alarm.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
       // await db.insert(tableName, test_alarm.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+      print(test_alarm.id);
       return test_alarm;
     }
 
@@ -58,7 +59,7 @@ class AlarmProvider {
     final db = await database;
 
     // 모든 Alarm를 얻기 위해 테이블에 질의합니다.
-    final List<Map<String, dynamic>> maps = await db.query('memos');
+    final List<Map<String, dynamic>> maps = await db.query(tableName);
 
     // List<Map<String, dynamic>를 List<testAlarm>으로 변환합니다.
     return List.generate(maps.length, (i) {

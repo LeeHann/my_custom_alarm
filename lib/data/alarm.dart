@@ -1,7 +1,7 @@
 import '../DB/db.dart';
 
 class testAlarm{
-  int id;
+  int? id;
   DateTime? _settingTime;
   List<bool> _days = [false, false, false, false, false, false, false];
   DateTime? _settingDay; // 알람이 울리는 특정일
@@ -9,7 +9,7 @@ class testAlarm{
   List<bool> _option = [false, false, false];
   // bool _isSound = false, _isVib = false, _isRepeat = false;
 
-  testAlarm({required this.id, required this.alarmName});
+  testAlarm({this.id, required this.alarmName});
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
